@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="secondary">#03DAC6</color>
-    <color name="secondary_dark">#018786</color>
-    <color name="background">#F5F5F5</color>
+    <!-- Primary Colors - iOS iChat Style -->
+    <color name="primary">#007AFF</color>
+    <color name="primary_dark">#0056CC</color>
+    <color name="primary_light">#5AC8FA</color>
+    
+    <!-- Secondary/Accent Colors -->
+    <color name="secondary">#34C759</color>
+    <color name="secondary_dark">#28A745</color>
+    <color name="accent">#FF9500</color>
+    
+    <!-- Background Colors - Glassy Effect -->
+    <color name="background">#F2F2F7</color>
+    <color name="background_dark">#1C1C1E</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_dark">#2C2C2E</color>
+    
+    <!-- Glass Effect Colors -->
+    <color name="glass_white">#E8F2FF</color>
+    <color name="glass_dark">#1A1A1A</color>
+    <color name="glass_overlay">#80FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1C1C1E</color>
+    <color name="text_secondary">#8E8E93</color>
+    <color name="text_tertiary">#C7C7CC</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="error">#B00020</color>
-    <color name="message_sent">#E3F2FD</color>
-    <color name="message_received">#FFFFFF</color>
-    <color name="system_message">#FFF3E0</color>
+    
+    <!-- Message Bubble Colors - iChat Style -->
+    <color name="message_sent">#007AFF</color>
+    <color name="message_sent_text">#FFFFFF</color>
+    <color name="message_received">#E5E5EA</color>
+    <color name="message_received_text">#000000</color>
+    <color name="message_received_dark">#38383A</color>
+    
+    <!-- System Message Colors -->
+    <color name="system_message">#E5E5EA</color>
+    <color name="system_message_text">#8E8E93</color>
+    
+    <!-- Status Colors -->
+    <color name="success">#34C759</color>
+    <color name="warning">#FF9500</color>
+    <color name="error">#FF3B30</color>
+    <color name="info">#007AFF</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#007AFF</color>
+    <color name="gradient_middle">#5AC8FA</color>
+    <color name="gradient_end">#00C7BE</color>
+    
+    <!-- Shadow Colors -->
+    <color name="shadow_light">#40000000</color>
+    <color name="shadow_dark">#60000000</color>
+    
+    <!-- Divider -->
+    <color name="divider">#C6C6C8</color>
+    <color name="divider_dark">#38383A</color>
 </resources>

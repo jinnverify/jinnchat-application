@@ -6,11 +6,11 @@ import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jinnchat.app.adapter.MessageAdapter
@@ -19,18 +19,21 @@ import com.jinnchat.app.websocket.WebSocketManager
 import com.jinnchat.app.websocket.CustomWebSocketListener
 import com.jinnchat.app.model.ChatMessage
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var messagesRecyclerView: RecyclerView
     private lateinit var messageEditText: EditText
     private lateinit var findPartnerButton: Button
-    private lateinit var sendButton: Button
     private lateinit var endChatButton: Button
+    private lateinit var sendButtonInline: ImageButton
     private lateinit var statusText: TextView
     private lateinit var onlineCountText: TextView
-    private lateinit var typingIndicator: TextView
-    private lateinit var inputLayout: LinearLayout
+    private lateinit var typingIndicator: LinearLayout
+    private lateinit var inputContainer: LinearLayout
+    private lateinit var buttonContainer: LinearLayout
 
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var webSocketManager: WebSocketManager
@@ -43,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     // Production server URL (Render)
     private val SERVER_URL = "wss://jinnchat-backend.onrender.com"
-    // private val SERVER_URL = "ws://10.0.2.2:3000" // For local testing
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +61,13 @@ class MainActivity : AppCompatActivity() {
         messagesRecyclerView = findViewById(R.id.messagesRecyclerView)
         messageEditText = findViewById(R.id.messageEditText)
         findPartnerButton = findViewById(R.id.findPartnerButton)
-        sendButton = findViewById(R.id.sendButton)
         endChatButton = findViewById(R.id.endChatButton)
+        sendButtonInline = findViewById(R.id.sendButtonInline)
         statusText = findViewById(R.id.statusText)
         onlineCountText = findViewById(R.id.onlineCountText)
         typingIndicator = findViewById(R.id.typingIndicator)
-        inputLayout = findViewById(R.id.inputLayout)
+        inputContainer = findViewById(R.id.inputContainer)
+        buttonContainer = findViewById(R.id.buttonContainer)
     }
 
     private fun setupRecyclerView() {
@@ -90,17 +93,18 @@ class MainActivity : AppCompatActivity() {
             when (message.type) {
                 "connected" -> {
                     userId = message.userId
-                    Toast.makeText(this, "Connected as: ${userId?.take(8)}...", Toast.LENGTH_SHORT).show()
+                    updateStatus("Ready", R.color.secondary)
+                    Toast.makeText(this, "Connected to JinnChat", Toast.LENGTH_SHORT).show()
                 }
                 "matched" -> {
                     isChatting = true
                     messageAdapter.addMessage(Message(text = message.message ?: "Partner found!", isSystem = true))
+                    updateStatus("Chatting", R.color.primary)
                     updateUI()
                     scrollToBottom()
                 }
                 "waiting" -> {
-                    statusText.text = "Looking for partner..."
-                    statusText.setTextColor(getColor(R.color.secondary))
+                    updateStatus("Looking for partner…", R.color.warning)
                 }
                 "chat_message" -> {
                     messageAdapter.addMessage(Message(text = message.message ?: "", isSent = false, isSystem = false))
@@ -119,10 +123,10 @@ class MainActivity : AppCompatActivity() {
                     scrollToBottom()
                 }
                 "user_count" -> {
-                    onlineCountText.text = "🟢 ${message.count} online"
+                    onlineCountText.text = "${message.count} online"
                 }
                 "typing" -> {
-                    if (message.isTyping == true) {
+                    if (message.isTyping == true && isChatting) {
                         typingIndicator.visibility = View.VISIBLE
                         handler.removeCallbacks(typingRunnable)
                         handler.postDelayed(typingRunnable, 2000)
@@ -148,13 +152,13 @@ class MainActivity : AppCompatActivity() {
             webSocketManager.findPartner()
         }
 
-        sendButton.setOnClickListener {
+        sendButtonInline.setOnClickListener {
             sendMessage()
         }
 
         messageEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                messageEditText.setBackgroundResource(R.drawable.input_background)
+                messageEditText.setBackgroundResource(R.drawable.input_background_ios)
             }
         }
 
@@ -169,6 +173,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     handler.postDelayed(typingRunnable, 2000)
                 }
+                
+                // Show/hide inline send button
+                sendButtonInline.visibility = if (s.toString().trim().isNotEmpty()) View.VISIBLE else View.GONE
             }
             override fun afterTextChanged(s: android.text.Editable?) {}
         })
@@ -198,6 +205,7 @@ class MainActivity : AppCompatActivity() {
         webSocketManager.sendChatMessage(text)
         messageAdapter.addMessage(Message(text = text, isSent = true, isSystem = false))
         messageEditText.text.clear()
+        sendButtonInline.visibility = View.GONE
         scrollToBottom()
     }
 
@@ -210,19 +218,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI() {
         findPartnerButton.isEnabled = !isChatting
-        sendButton.isEnabled = isChatting
-        messageEditText.isEnabled = isChatting
         endChatButton.isEnabled = isChatting
+        messageEditText.isEnabled = isChatting
+        
+        // Alpha effect for disabled buttons
+        findPartnerButton.alpha = if (!isChatting) 1.0f else 0.5f
+        endChatButton.alpha = if (isChatting) 1.0f else 0.5f
 
         if (isChatting) {
-            statusText.text = "Chatting"
-            statusText.setTextColor(getColor(R.color.primary))
-            messageEditText.hint = "Type a message..."
+            messageEditText.hint = "iMessage"
+            inputContainer.visibility = View.VISIBLE
         } else {
-            statusText.text = "Ready"
-            statusText.setTextColor(getColor(R.color.secondary))
             messageEditText.hint = "Find a partner to start chatting"
         }
+    }
+
+    private fun updateStatus(status: String, colorResId: Int) {
+        statusText.text = status
+        statusText.setTextColor(getColor(colorResId))
     }
 
     private fun scrollToBottom() {

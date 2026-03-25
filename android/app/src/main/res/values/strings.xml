@@ -4,9 +4,13 @@
     <string name="find_partner">Find Partner</string>
     <string name="send">Send</string>
     <string name="end_chat">End Chat</string>
-    <string name="type_message">Type a message...</string>
+    <string name="type_message">iMessage</string>
     <string name="disconnected">Disconnected</string>
     <string name="connected">Connected</string>
-    <string name="waiting">Looking for partner...</string>
+    <string name="waiting">Looking for partner…</string>
     <string name="chatting">Chatting</string>
+    <string name="ready">Ready</string>
+    <string name="partner_found">Partner found!</string>
+    <string name="chat_ended">Chat ended</string>
+    <string name="partner_disconnected">Partner disconnected</string>
 </resources>
