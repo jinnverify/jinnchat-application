@@ -17,6 +17,6 @@
             android:fillColor="#FFFFFF"
             android:centerX="12"
             android:centerY="12"
-            android:radius="2"/>
+            android:radius="2dp"/>
     </group>
 </vector>
