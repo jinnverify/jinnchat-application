@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JinnChat</string>
+    <string name="find_partner">Find Partner</string>
+    <string name="send">Send</string>
+    <string name="end_chat">End Chat</string>
+    <string name="type_message">Type a message...</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
+    <string name="waiting">Looking for partner...</string>
+    <string name="chatting">Chatting</string>
+</resources>
