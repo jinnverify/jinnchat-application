@@ -78,27 +78,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupWebSocket() {
         webSocketManager = WebSocketManager(SERVER_URL)
 
-        val listener = object : CustomWebSocketListener({ message ->
+        val listener = CustomWebSocketListener { message ->
             handleWebSocketMessage(message)
-        }) {
-            override fun onOpen(webSocket: okhttp3.WebSocket, response: okhttp3.Response) {
-                super.onOpen(webSocket, response)
-                runOnUiThread {
-                    statusText.text = "Connected"
-                    statusText.setTextColor(getColor(android.R.color.holo_green_light))
-                    Toast.makeText(this@MainActivity, "Connected to server", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onClosed(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
-                super.onClosed(webSocket, code, reason)
-                runOnUiThread {
-                    statusText.text = "Disconnected"
-                    statusText.setTextColor(getColor(android.R.color.holo_red_light))
-                    isChatting = false
-                    updateUI()
-                }
-            }
         }
 
         webSocketManager.connect(listener)
@@ -119,10 +100,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 "waiting" -> {
                     statusText.text = "Looking for partner..."
-                    statusText.setTextColor(getColor(android.R.color.holo_yellow_light))
+                    statusText.setTextColor(getColor(R.color.secondary))
                 }
                 "chat_message" -> {
-                    messageAdapter.addMessage(Message(text = message.message ?: "", isSent = false))
+                    messageAdapter.addMessage(Message(text = message.message ?: "", isSent = false, isSystem = false))
                     scrollToBottom()
                 }
                 "chat_ended", "partner_ended" -> {
@@ -215,7 +196,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         webSocketManager.sendChatMessage(text)
-        messageAdapter.addMessage(Message(text = text, isSent = true))
+        messageAdapter.addMessage(Message(text = text, isSent = true, isSystem = false))
         messageEditText.text.clear()
         scrollToBottom()
     }
@@ -235,11 +216,11 @@ class MainActivity : AppCompatActivity() {
 
         if (isChatting) {
             statusText.text = "Chatting"
-            statusText.setTextColor(getColor(android.R.color.holo_green_light))
+            statusText.setTextColor(getColor(R.color.primary))
             messageEditText.hint = "Type a message..."
         } else {
             statusText.text = "Ready"
-            statusText.setTextColor(getColor(android.R.color.holo_blue_light))
+            statusText.setTextColor(getColor(R.color.secondary))
             messageEditText.hint = "Find a partner to start chatting"
         }
     }
