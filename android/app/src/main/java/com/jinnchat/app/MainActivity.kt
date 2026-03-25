@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jinnchat.app.adapter.MessageAdapter
 import com.jinnchat.app.model.Message
 import com.jinnchat.app.websocket.WebSocketManager
-import com.jinnchat.app.websocket.WebSocketListener
+import com.jinnchat.app.websocket.CustomWebSocketListener
 import com.jinnchat.app.model.ChatMessage
 import kotlinx.coroutines.launch
 
@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupWebSocket() {
         webSocketManager = WebSocketManager(SERVER_URL)
-        
-        val listener = object : WebSocketListener({ message ->
+
+        val listener = object : CustomWebSocketListener({ message ->
             handleWebSocketMessage(message)
         }) {
             override fun onOpen(webSocket: okhttp3.WebSocket, response: okhttp3.Response) {

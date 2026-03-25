@@ -6,7 +6,7 @@ import com.jinnchat.app.model.ChatMessage
 import okhttp3.*
 import java.util.concurrent.TimeUnit
 
-class WebSocketListener(private val onMessageReceived: (ChatMessage) -> Unit) : WebSocketListener() {
+class CustomWebSocketListener(private val onMessageReceived: (ChatMessage) -> Unit) : okhttp3.WebSocketListener() {
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.d("WebSocket", "Connected to server")
     }
@@ -41,16 +41,16 @@ class WebSocketManager(private val serverUrl: String) {
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .connectTimeout(10, TimeUnit.SECONDS)
         .build()
-    
+
     private val gson = Gson()
     var isConnected = false
         private set
 
-    fun connect(listener: WebSocketListener) {
+    fun connect(listener: CustomWebSocketListener) {
         val request = Request.Builder()
             .url(serverUrl)
             .build()
-        
+
         webSocket = client.newWebSocket(request, listener)
     }
 
